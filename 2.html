@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>作业2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .carousel {
+            width: 381px;
+            height: 280px;
+            margin: 100px auto;
+            position: relative;
+            border: 1px solid #000;
+            overflow: hidden;
+        }
+
+        .carousel .imageList {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 381px;
+            height: 230px;
+        }
+
+        .carousel .imageList ul {
+            list-style: none;
+        }
+
+        .carousel .imageList ul li {
+            width: 381px;
+            height: 230px;
+        }
+
+        .carousel .imageList ul li img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .smallImage {
+            height: 50px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .carousel .smallImage ul {
+            list-style: none;
+        }
+
+        .carousel .smallImage ul li {
+            width: 70px;
+            height: 47px;
+            float: left;
+            border: 3px solid gray;
+        }
+
+        .carousel .smallImage ul li:hover {
+            border-color: #ccc;
+        }
+
+        .carousel .smallImage ul li.cur {
+            border-color: orange;
+        }
+
+        .carousel .smallImage ul li img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="carousel">
+    <div class="imageList">
+        <ul>
+            <li><a href="#"><img src="images/homework2/0.jpg" alt=""></a></li>
+            <li><a href="#"><img src="images/homework2/1.jpg" alt=""></a></li>
+            <li><a href="#"><img src="images/homework2/2.jpg" alt=""></a></li>
+            <li><a href="#"><img src="images/homework2/3.jpg" alt=""></a></li>
+            <li><a href="#"><img src="images/homework2/4.jpg" alt=""></a></li>
+        </ul>
+    </div>
+    <div class="smallImage">
+        <ul>
+            <li class="cur"><a href="javascript:;"><img src="images/homework2/0.jpg" alt=""></a></li>
+            <li><a href="javascript:;"><img src="images/homework2/1.jpg" alt=""></a></li>
+            <li><a href="javascript:;"><img src="images/homework2/2.jpg" alt=""></a></li>
+            <li><a href="javascript:;"><img src="images/homework2/3.jpg" alt=""></a></li>
+            <li><a href="javascript:;"><img src="images/homework2/4.jpg" alt=""></a></li>
+        </ul>
+    </div>
+</div>
+
+<script src="./js/jquery-1.12.3.min.js"></script>
+<script>
+    let $imageList = $(".imageList")
+    $(".imageList ul").append($(".imageList ul li:first").clone())
+
+    let idx = 0
+
+    let timer = setInterval(move, 1800)
+    $(".carousel").mouseenter(function () {
+        clearInterval(timer)
+    })
+    $(".carousel").mouseleave(function () {
+        timer = setInterval(move, 1800)
+    })
+
+    function move() {
+        idx++
+        $imageList.animate({
+            "top": -230 * idx
+        }, 800, function () {
+            if (idx === 5) {
+                idx = 0
+                $imageList.css("top", 0)
+            }
+        })
+        changeSmall()
+    }
+
+    // 监听小图片的点击事件
+    $(".smallImage ul li").click(function () {
+        idx = $(this).index()
+        $imageList.stop(true).animate({
+            "top": -230 * idx
+        }, 800)
+        changeSmall()
+    })
+
+    function changeSmall() {
+        let n = idx === 5 ? 0 : idx
+        $(".smallImage ul li").eq(n).addClass("cur").siblings().removeClass("cur")
+    }
+</script>
+</body>
+</html>
