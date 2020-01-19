@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>京东商城放大镜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .smallPic {
+            width: 350px;
+            height: 350px;
+            border: 1px solid #ccc;
+            margin: 100px;
+            position: relative;
+        }
+
+        .smallPic .zoom {
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 175px;
+            height: 175px;
+            background: #fede4f;
+            opacity: 0.5;
+            border: 1px solid #aaa;
+            display: none;
+        }
+
+        .bigPic {
+            width: 400px;
+            height: 400px;
+            background: url("images/da.jpg") no-repeat;
+            position: absolute;
+            top: 100px;
+            left: 500px;
+            border: 1px solid #000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="smallPic" id="smallPic">
+    <img src="images/xiao.jpg" alt="">
+    <div class="zoom" id="zoom"></div>
+</div>
+<div class="bigPic" id="bigPic"></div>
+
+<script>
+    let smallPic = document.getElementById("smallPic")
+    let zoom = document.getElementById("zoom")
+    let bigPic = document.getElementById("bigPic")
+
+    //比例怎么算的？？大图800*800，大图盒子400*400
+    //小图盒子350*350  放大镜175*175
+    //所以放大镜总行程175 ， 大图的总行程400
+    let rate = 400 / 175
+
+    // 鼠标进入显示：
+    smallPic.onmouseover = function () {
+        zoom.style.display = 'block'
+        bigPic.style.display = "block"
+    }
+
+    // 鼠标离开时隐藏：
+    smallPic.onmouseout = function () {
+        zoom.style.display = "none"
+        bigPic.style.display = "none"
+    }
+
+    // 监听：
+    smallPic.onmousemove = function (event) {
+        event = event || window.event
+
+        // 我们发现event.offsetX这个值你不能用！！哈哈哈哈哈哈哈哈哈哈哈
+        // 为啥？因为onmousemove事件冒泡，鼠标碰到zoom这个盒子的时候事件将往上传播，
+        // 又触发了smallPic的onmousemove事件。此时event.offsetX的坐标，以zoom左上角为准。
+        // var x = event.offsetX ;
+        // var y = event.offsetY ;
+
+        // 得到页面的卷动值
+        let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
+        let scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft
+        //费好大的劲，周转一下，得到x、y
+        //减去87就是修正鼠标的位置，让鼠标在zoom盒子的中心点:
+        let x = event.clientX - (getAllLeft(smallPic) - scrollLeft) - 87
+        let y = event.clientY - (getAllLeft(smallPic) - scrollTop) - 87
+
+        if (x <= 0) {
+            x = 0
+        } else if (x > 175) {
+            x = 175
+        }
+        if (y < 0) {
+            y = 0
+        } else if (y > 175) {
+            y = 175
+        }
+
+        // 放大镜的移动
+        zoom.style.top = y + "px"
+        zoom.style.left = x + "px"
+
+        bigPic.style.backgroundPosition = -x * rate + "px " + -y * rate + "px"
+    }
+
+    // 返回这个元素在页面中的净位置
+    // 就是这个元素所有offsetParent的offsetTop值的和
+
+    function getAllTop(obj) {
+        let allTop = obj.offsetTop
+        let currentObj = obj
+        while (currentObj = currentObj.offsetParent) {
+            allTop += currentObj.offsetTop
+        }
+        return allTop
+    }
+
+    function getAllLeft(obj) {
+        let allLeft = obj.offsetLeft
+        let currentObj = obj
+        while (currentObj = currentObj.offsetParent) {
+            allLeft += currentObj.offsetLeft
+        }
+        return allLeft
+    }
+</script>
+</body>
+</html>

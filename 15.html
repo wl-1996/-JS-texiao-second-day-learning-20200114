@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>显示一个盒子内部的坐标位置</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            width: 400px;
+            height: 400px;
+            background: yellowgreen;
+            margin: 100px;
+        }
+    </style>
+</head>
+<body>
+<div></div>
+<script>
+    let oDiv = document.getElementsByTagName("div")[0]
+
+    oDiv.onmousemove = function (event) {
+        event = event || window.event
+        // offsetX、offsetY直接得到坐标值，曾经不兼容
+        // let x = event.offsetX
+        // let y = event.offsetY
+        // console.log(x, y)
+
+        // 周转一下：
+        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+        let x = event.clientX - (getAllLeft(oDiv))
+        let y = event.clientY - (getAllTop(oDiv) - scrollTop)
+
+        oDiv.innerHTML = x + " " + y
+    }
+
+    //返回这个元素在页面中的净位置
+    //就是这个元素所有offsetParent的offsetTop值的和
+    function getAllTop(obj) {
+        //累加器，累加器的初始值不是0，而是自己现在offsetTop值
+        //一会儿while语句直接从它爸开始了
+        let allTop = obj.offsetTop
+        //当前正在算高度的元素
+        let currentObj = obj
+        while (currentObj = currentObj.offsetParent) {
+            allTop += currentObj.offsetTop
+        }
+        return allTop
+    }
+
+    function getAllLeft(obj) {
+        //累加器，累加器的初始值不是0，而是自己现在offsetLeft值
+        //一会儿while语句直接从它爸开始了
+        let allLeft = obj.offsetLeft
+        //当前正在算高度的元素
+        let currentObj = obj
+        while (currentObj = currentObj.offsetParent) {
+            allLeft += currentObj.offsetLeft
+        }
+        return allLeft
+
+    }
+</script>
+</body>
+</html>

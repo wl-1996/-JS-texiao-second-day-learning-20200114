@@ -36,19 +36,23 @@
             background: blue url("./images/bg05.png");
         }
 
-        .box .imageList{
+        .box .imageList {
             float: left;
             width: 700px;
             height: 130px;
             overflow: hidden;
+            position: relative;
         }
 
-        .imageList ul{
+        .imageList ul {
+            position: absolute;
+            left: 0;
+            top: 0;
             list-style: none;
             width: 5000px;
         }
 
-        .imageList ul li{
+        .imageList ul li {
             float: left;
             margin-right: 10px;
         }
@@ -69,7 +73,7 @@
             background: blue url("images/bg05.png") -42px 0;
         }
 
-        .box .bar{
+        .box .bar {
             width: 700px;
             height: 20px;
             position: absolute;
@@ -79,36 +83,36 @@
             margin-left: -350px;
         }
 
-        .box .bar .span1{
+        .box .bar .span1 {
             width: 81px;
             height: 15px;
             position: absolute;
             left: 0;
             top: 3px;
-            background: yellow url("images/bg07.png")  0px -32px;
+            background: yellow url("images/bg07.png") 0px -32px;
         }
 
-        .box .bar .span2{
+        .box .bar .span2 {
             width: 11px;
             height: 15px;
             left: 0;
             position: absolute;
-            background:  url("images/bg07.png") 0 0;
+            background: url("images/bg07.png") 0 0;
         }
 
-        .box .bar .span3{
+        .box .bar .span3 {
             position: absolute;
             width: 11px;
             height: 15px;
             right: 0;
-            background:  url("images/bg07.png") -24px 0px;
+            background: url("images/bg07.png") -24px 0px;
         }
 
-        .box .bar .span4{
+        .box .bar .span4 {
             position: absolute;
             width: 10px;
             height: 15px;
-            left: 50% ;
+            left: 50%;
             margin-left: -5px;
             background: blue url("images/bg07.png") -14px 0px;
         }
@@ -145,7 +149,84 @@
 </div>
 
 <script>
+    let leftBtn = document.getElementById("leftBtn")
+    let rightBtn = document.getElementById("rightBtn")
+    let m_unit = document.getElementById("m_unit")
+    let barB = document.getElementById("barB")
 
+    // 图片总个数
+    let lislength = m_unit.getElementsByTagName("li").length
+    // 图片总宽度
+    //200宽度+10的margin - 最后一张图的margin:
+    let allWidth = lislength * 210 - 10
+
+    // 图片列表当前的left
+    let nowimageleft = 0
+    // 滑块当前的left
+    let nowbarbleft = 0
+
+    // 比例
+    let rate = 700 / allWidth
+    // 滑块的初始的宽度
+    let barBwidth = 700 * rate
+    barB.style.width = barBwidth + "px"
+
+    // 右按钮
+    rightBtn.onclick = function () {
+
+        // 两个信号量的改变
+        nowimageleft -= 50
+        nowbarbleft += 50 * rate
+        // 验收
+        if (nowimageleft < -allWidth + 700) {
+            nowimageleft = -allWidth + 700
+            nowbarbleft = 700 - barBwidth
+        }
+
+        m_unit.style.left = nowimageleft + "px"
+        barB.style.left = nowbarbleft + "px"
+    }
+
+    leftBtn.onclick = function () {
+
+        // 两个信号量的改变
+        nowimageleft += 50
+        nowbarbleft -= 50 * rate
+        // 验收
+        if (nowimageleft > 0) {
+            nowimageleft = 0
+            nowbarbleft = 0
+        }
+
+        m_unit.style.left = nowimageleft + "px"
+        barB.style.left = nowbarbleft + "px"
+    }
+
+    barB.onmousedown = function (event) {
+        event = event || window.event
+        // 计算一下误差
+        let deltaX = event.clientX - barB.offsetLeft
+
+        document.onmousemove = function (event) {
+            event = event || window.event
+            nowbarbleft = event.clientX - deltaX
+            // 验收
+            if (nowbarbleft < 0) {
+                nowbarbleft = 0
+            } else if (nowbarbleft > 700 - barBwidth) {
+                nowbarbleft = 700 - barBwidth
+            }
+
+            nowimageleft = -nowbarbleft / rate
+            barB.style.left = nowbarbleft + "px"
+            m_unit.style.left = nowimageleft + "px"
+            return false
+        }
+
+        document.onmouseup = function () {
+            document.onmousemove = null
+        }
+    }
 </script>
 </body>
 </html>
