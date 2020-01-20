@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>设置卷动值动画</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            height: 5000px;
+            background: url("images/2.jpg");
+        }
+
+        .backtotop {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: skyblue;
+            text-align: center;
+            line-height: 120px;
+            text-decoration: none;
+            color: black;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<a href="javascript:;" class="backtotop" id="backtotop">回到顶部</a>
+
+<script src="js/tween.js"></script>
+<script>
+
+    backtotop.onclick = function () {
+        scrollAnimate(0, 1000)
+        this.style.backgroundPosition = "-120px 0"
+    }
+
+    window.onscroll = function () {
+        let st = document.body.scrollTop || document.documentElement.scrollTop
+        if (st > 500) {
+            backtotop.style.display = "block"
+        } else {
+            backtotop.style.display = "none"
+        }
+    }
+
+    function scrollAnimate(target, time) {
+        let frameNumber = 0
+        let start = document.body.scrollTop || document.documentElement.scrollTop
+        let distance = target - start
+        let interval = 10
+        let maxFrame = time / interval
+
+        // clearInterval(timer)
+        let timer = setInterval(function () {
+            frameNumber++
+            if (frameNumber == maxFrame) {
+                clearInterval(timer)
+            }
+            //第一个参数t表示当前帧编号
+            //第二个参数b表示起始位置
+            //第三个参数c表示变化量
+            //第四个参数d表示总帧数
+            //返回当前帧应该在哪儿
+            document.body.scrollTop = document.documentElement.scrollTop = CubicEaseInOut(frameNumber, start, distance, maxFrame)
+
+        }, 10)
+
+        function CubicEaseInOut(t, b, c, d) {
+            if ((t /= d / 2) < 1) return c / 2 * t * t * t + b;
+            return c / 2 * ((t -= 2) * t * t + 2) + b;
+        }
+
+    }
+</script>
+</body>
+</html>
